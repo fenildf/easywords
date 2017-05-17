@@ -1,0 +1,74 @@
+<resources>
+    <string name="app_name">easy words</string>
+    <string name="zhanghao">账号 ：</string>
+    <string name="qingshuruzhanghao">请输入账号</string>
+    <string name="password">密码 ：</string>
+    <string name="et_login_passwd">请输入密码</string>
+    <string name="register_now">立即注册</string>
+    <string name="checkin_now">马上登录</string>
+    <string name="title">日记随笔v3.0</string>
+    <string name="copy_right">MyDiary copyright-zhi</string>
+    <string name="add_content">输入内容</string>
+    <string name="register_acount">注册账号 ：</string>
+    <string name="et_new_name">请输入注册账号</string>
+    <string name="login_passwd">登录密码 ：</string>
+    <string name="et_new_passed">请输入登录密码</string>
+    <string name="pass_check">密码确认 ：</string>
+    <string name="et_pass_check">请输入确认密码</string>
+    <string name="btn_register">立即注册</string>
+    <string name="processing">正在处理数据，请稍后......</string>
+    <string name="note_success">日记添加成功</string>
+    <string name="notemodify_success">日记修改成功</string>
+    <string name="add_fail">添加失败</string>
+    <string name="modify_fail">修改失败</string>
+    <string name="content_null">输入内容不能空</string>
+    <string name="no_note">目前没有任何日记</string>
+    <string name="name_or_pass_error">账号或密码错误</string>
+    <string name="pass_notmatch">两次输入的密码不一致</string>
+    <string name="pass_null">密码不能为空</string>
+    <string name="name_existed">用户名已存在</string>
+    <string name="useradd_success">新用户添加成功</string>
+    <string name="name_null">用户名不能为空</string>
+    <string name="welcome">欢迎登录</string>
+    <string name="delete_success">删除成功</string>
+    <string name="sys_tip">系统提示</string>
+    <string name="exit_check">确定退出吗？</string>
+    <string name="cacel">取消</string>
+    <string name="yes">确定</string>
+    <string name="addNewNote">添加新日记</string>
+    <string name="note_list">日记列表</string>
+    <string name="note_operation">文件操作</string>
+    <string name="tishi">提示</string>
+    <string name="delete_check">您确定要删除此日记吗?</string>
+    <string name="shi">是</string>
+    <string name="delete_fail">删除失败</string>
+    <string name="no">否</string>
+    <string name="deleteAllCheck">您确定要删除所有日记吗?</string>
+    <string name="modify_note">修改笔记</string>
+    <string name="month">月</string>
+    <string name="day">日</string>
+    <string name="new_user_add">新用户注册</string>
+    <string name="add">添加</string>
+    <string name="edit">编辑</string>
+    <string name="dddd">dddd</string>
+    <string name="delete">删除</string>
+    <string name="input_search_content">请输入查找内容</string>
+    <string name="change_passwd">更改密码</string>
+    <string name="pass_cant_null">密码不能为空</string>
+    <string name="modify_succ">修改成功</string>
+    <string name="month_day">MM月dd日</string>
+    <string name="hour_minute">hh:mm</string>
+    <string name="title_activity_user">UserActivity</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_user2">UserActivity2</string>
+    <string name="title_home">首页</string>
+    <string name="title_dashboard">发现</string>
+    <string name="title_notifications">我的</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

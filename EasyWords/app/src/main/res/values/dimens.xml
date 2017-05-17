@@ -1,0 +1,50 @@
+<resources>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <dimen name="copyright_marginbottom">29dp</dimen>
+    <dimen name="login_box_marginleft">35dp</dimen>
+    <dimen name="login_box_padding">12dp</dimen>
+    <dimen name="name_layout_marginbottom">10dp</dimen>
+    <dimen name="et_login_name_padding">8dp</dimen>
+    <dimen name="et_login_passwd_padding">8dp</dimen>
+    <dimen name="et_login_passwd_marginbottom">10dp</dimen>
+    <dimen name="btn_regis_marginright">5dp</dimen>
+    <dimen name="btn_login_marginleft">5dp</dimen>
+    <dimen name="width">0dp</dimen>
+    <dimen name="title_textSize">35sp</dimen>
+    <dimen name="title_margin_top">80dp</dimen>
+    <dimen name="et_write_note_padding">6dp</dimen>
+    <dimen name="linearlayout2_padding">4dp</dimen>
+    <dimen name="et_new_name_padding">10dp</dimen>
+    <dimen name="et_new_passwd_padding">10dp</dimen>
+    <dimen name="et_new_passwd_marginbottom">10dp</dimen>
+    <dimen name="et_pass_check_padding">10dp</dimen>
+    <dimen name="et_pass_check_marginbottom">10dp</dimen>
+    <dimen name="btns_linear_margintop">12dp</dimen>
+    <dimen name="btn_regis_real_marginright">5dp</dimen>
+    <dimen name="progressbar_marginright">20dp</dimen>
+    <dimen name="tvDate_size">28sp</dimen>
+    <dimen name="tvTime_size">16sp</dimen>
+    <dimen name="tvSum_size">16sp</dimen>
+    <dimen name="toast_paddingleft">11dp</dimen>
+    <dimen name="toast_paddingright">15dp</dimen>
+    <dimen name="toast_paddingtop">10dp</dimen>
+    <dimen name="toast_paddingbottom">10dp</dimen>
+    <dimen name="note_fail_padding">15dp</dimen>
+    <dimen name="note_fail_size">15sp</dimen>
+    <dimen name="notmatch_padding">15dp</dimen>
+    <dimen name="name_size">20sp</dimen>
+    <dimen name="name_size2">18sp</dimen>
+    <dimen name="name_etsize">14sp</dimen>
+    <dimen name="ll_margin_top">11dp</dimen>
+    <dimen name="ll_marginbottom">8dp</dimen>
+    <dimen name="end1">10dp</dimen>
+    <dimen name="start1">10dp</dimen>
+    <dimen name="top1">12dp</dimen>
+    <dimen name="bottom1">10dp</dimen>
+    <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="nav_header_vertical_spacing">16dp</dimen>
+    <dimen name="nav_header_height">160dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
+</resources>
