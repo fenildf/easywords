@@ -71,8 +71,8 @@ public class UserActivity extends AppCompatActivity
         sent_today = (TextView) findViewById(R.id.textView24);
         begin = (Button) findViewById(R.id.button5);
         dbHelper = MyDatabaseHelper.getDbHelper(this);
-        initUserRecord(getIntent().getStringExtra("username"));
-        sentenceToday();
+//        initUserRecord(getIntent().getStringExtra("username"));
+//        sentenceToday();
 //        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 //        toolbar.setTitle("易背单词");
 //        setSupportActionBar(toolbar);
@@ -85,36 +85,36 @@ public class UserActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                switch (msg.what) {
-                    case 0x1234:
-                        String result = msg.getData().getString("result");
-                        try {
-                            JSONObject root = new JSONObject(result);
-                            pron_mp3 = root.getString("tts");
-                            String content = root.getString("content");
-                            String pic_s = root.getString("picture");
-                            String pic_l = root.getString("picture2");
-                            String date = root.getString("dateline");
-                            String note = root.getString("note");
-                            ContentValues cv = new ContentValues();
-                            cv.put("sentence", content + "\n" + note);
-                            cv.put("pron_mp3", pron_mp3);
-                            cv.put("pic_s", pic_s);
-                            cv.put("pic_l", pic_l);
-                            cv.put("date", date);
-                            dbHelper.addSentence(dbHelper.getWritableDatabase(), cv);
-                            sent_today.setText(content + "\n" + note);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        break;
-                }
-            }
-        };
+//        handler = new Handler() {
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                switch (msg.what) {
+//                    case 0x1234:
+//                        String result = msg.getData().getString("result");
+//                        try {
+//                            JSONObject root = new JSONObject(result);
+//                            pron_mp3 = root.getString("tts");
+//                            String content = root.getString("content");
+//                            String pic_s = root.getString("picture");
+//                            String pic_l = root.getString("picture2");
+//                            String date = root.getString("dateline");
+//                            String note = root.getString("note");
+//                            ContentValues cv = new ContentValues();
+//                            cv.put("sentence", content + "\n" + note);
+//                            cv.put("pron_mp3", pron_mp3);
+//                            cv.put("pic_s", pic_s);
+//                            cv.put("pic_l", pic_l);
+//                            cv.put("date", date);
+//                            dbHelper.addSentence(dbHelper.getWritableDatabase(), cv);
+//                            sent_today.setText(content + "\n" + note);
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                        break;
+//                }
+//            }
+//        };
     }
 
     @Override
@@ -138,9 +138,9 @@ public class UserActivity extends AppCompatActivity
         return true;
     }
 
-    private void initUserRecord(String username) {
-        dbHelper.initUserRecord(dbHelper.getWritableDatabase(), username);
-    }
+//    private void initUserRecord(String username) {
+//        dbHelper.initUserRecord(dbHelper.getWritableDatabase(), username);
+//    }
 
     public void beginRecite(View view) {
         Intent intent = new Intent(this, ReciteWordActivity.class);
@@ -148,144 +148,144 @@ public class UserActivity extends AppCompatActivity
         startActivity(intent);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        showRecord();
-        if (tv_today_words.getText().toString().equals(String.valueOf(dbHelper.last_pos(dbHelper.getReadableDatabase(), getIntent().getStringExtra("username"))))) {
-            begin.setText("再来一组");
-            dbHelper.deleteRecord(dbHelper.getWritableDatabase(), getIntent().getStringExtra("username"));
-        } else {
-            begin.setText("开始");
-        }
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        showRecord();
+//        if (tv_today_words.getText().toString().equals(String.valueOf(dbHelper.last_pos(dbHelper.getReadableDatabase(), getIntent().getStringExtra("username"))))) {
+//            begin.setText("再来一组");
+//            dbHelper.deleteRecord(dbHelper.getWritableDatabase(), getIntent().getStringExtra("username"));
+//        } else {
+//            begin.setText("开始");
+//        }
+//    }
 
-    public void showRecord() {
-        Cursor cursor = dbHelper.getRecord(dbHelper.getReadableDatabase(), getIntent().getStringExtra("username"));
-        try {
-            while (cursor.moveToNext()) {
-                int days = cursor.getInt(cursor.getColumnIndex("days"));
-                int total_words = cursor.getInt(cursor.getColumnIndex("total_words"));
-                int master_words = cursor.getInt(cursor.getColumnIndex("master_words"));
-                int today_words = cursor.getInt(cursor.getColumnIndex("today_words"));
-                int today_nword = cursor.getInt(cursor.getColumnIndex("today_nword"));
-                int today_cmp = cursor.getInt(cursor.getColumnIndex("today_cmp"));
-                tv_days.setText(String.valueOf(days));
-                tv_total_words.setText(String.valueOf(total_words));
-                tv_master_words.setText(String.valueOf(master_words));
-                tv_today_words.setText(String.valueOf(today_words));
-                tv_today_nword.setText(String.valueOf(today_nword));
-                tv_today_cmp.setText(String.valueOf(today_cmp));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            cursor.close();
-        }
-    }
+//    public void showRecord() {
+//        Cursor cursor = dbHelper.getRecord(dbHelper.getReadableDatabase(), getIntent().getStringExtra("username"));
+//        try {
+//            while (cursor.moveToNext()) {
+//                int days = cursor.getInt(cursor.getColumnIndex("days"));
+//                int total_words = cursor.getInt(cursor.getColumnIndex("total_words"));
+//                int master_words = cursor.getInt(cursor.getColumnIndex("master_words"));
+//                int today_words = cursor.getInt(cursor.getColumnIndex("today_words"));
+//                int today_nword = cursor.getInt(cursor.getColumnIndex("today_nword"));
+//                int today_cmp = cursor.getInt(cursor.getColumnIndex("today_cmp"));
+//                tv_days.setText(String.valueOf(days));
+//                tv_total_words.setText(String.valueOf(total_words));
+//                tv_master_words.setText(String.valueOf(master_words));
+//                tv_today_words.setText(String.valueOf(today_words));
+//                tv_today_nword.setText(String.valueOf(today_nword));
+//                tv_today_cmp.setText(String.valueOf(today_cmp));
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        } finally {
+//            cursor.close();
+//        }
+//    }
 
-    public void pronu(View view) {
-        final Uri uri = Uri.parse(pron_mp3);
-        if (!mPlayer.isPlaying()) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        mPlayer.setDataSource(UserActivity.this, uri);
-                        mPlayer.prepare();
-                        mPlayer.start();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    } finally {
-                        if (!mPlayer.isPlaying()) {
-                            mPlayer.release();
-                        }
-                    }
-                }
-            }).start();
-            mPlayer.reset();
-        }
-    }
+//    public void pronu(View view) {
+//        final Uri uri = Uri.parse(pron_mp3);
+//        if (!mPlayer.isPlaying()) {
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        mPlayer.setDataSource(UserActivity.this, uri);
+//                        mPlayer.prepare();
+//                        mPlayer.start();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    } finally {
+//                        if (!mPlayer.isPlaying()) {
+//                            mPlayer.release();
+//                        }
+//                    }
+//                }
+//            }).start();
+//            mPlayer.reset();
+//        }
+//    }
 
-    private void sentenceToday() {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        String date = format.format(new Date());
-        Cursor cursor = dbHelper.getSenToday(dbHelper.getReadableDatabase(), date);
-        if (cursor.getCount() != 0) {
-            while (cursor.moveToNext()) {
-                pron_mp3 = cursor.getString(cursor.getColumnIndex("pron_mp3"));
-                sent_today.setText(cursor.getString(cursor.getColumnIndex("sentence")));
-            }
-        } else {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        String baseurl = "http://open.iciba.com/dsapi/";
-                        URL url = new URL(baseurl);
-                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                        conn.setRequestMethod("GET");
-                        conn.setDoInput(true);
-                        InputStream is = conn.getInputStream();
-                        InputStreamReader isr = new InputStreamReader(is);
-                        String result = "";
-                        char[] buffer = new char[100];
-                        int len = 0;
-                        while ((len = isr.read(buffer)) != -1) {
-                            result += String.valueOf(buffer, 0, len);
-                        }
-                        Message msg = new Message();
-                        Bundle bundle = new Bundle();
-                        bundle.putString("result", result);
-                        msg.setData(bundle);
-                        msg.what = 0x1234;
-                        handler.sendMessage(msg);
-                        isr.close();
-                        is.close();
-                        conn.disconnect();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }).start();
-        }
-        cursor.close();
-    }
+//    private void sentenceToday() {
+//        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+//        String date = format.format(new Date());
+//        Cursor cursor = dbHelper.getSenToday(dbHelper.getReadableDatabase(), date);
+//        if (cursor.getCount() != 0) {
+//            while (cursor.moveToNext()) {
+//                pron_mp3 = cursor.getString(cursor.getColumnIndex("pron_mp3"));
+//                sent_today.setText(cursor.getString(cursor.getColumnIndex("sentence")));
+//            }
+//        } else {
+//            new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    try {
+//                        String baseurl = "http://open.iciba.com/dsapi/";
+//                        URL url = new URL(baseurl);
+//                        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//                        conn.setRequestMethod("GET");
+//                        conn.setDoInput(true);
+//                        InputStream is = conn.getInputStream();
+//                        InputStreamReader isr = new InputStreamReader(is);
+//                        String result = "";
+//                        char[] buffer = new char[100];
+//                        int len = 0;
+//                        while ((len = isr.read(buffer)) != -1) {
+//                            result += String.valueOf(buffer, 0, len);
+//                        }
+//                        Message msg = new Message();
+//                        Bundle bundle = new Bundle();
+//                        bundle.putString("result", result);
+//                        msg.setData(bundle);
+//                        msg.what = 0x1234;
+//                        handler.sendMessage(msg);
+//                        isr.close();
+//                        is.close();
+//                        conn.disconnect();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }).start();
+//        }
+//        cursor.close();
+//    }
 
-    @Override
-    public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else {
-            super.onBackPressed();
-        }
-    }
+//    @Override
+//    public void onBackPressed() {
+//        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        if (drawer.isDrawerOpen(GravityCompat.START)) {
+//            drawer.closeDrawer(GravityCompat.START);
+//        } else {
+//            super.onBackPressed();
+//        }
+//    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.user, menu);
-        final SearchView searchView =
-                (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
-        searchView.setQueryHint("输入要查找的单词");
-        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
-            @Override
-            public boolean onQueryTextSubmit(String query) {
-                Intent intent = new Intent(UserActivity.this, MainActivity.class);
-                intent.putExtra("query", query);
-                intent.putExtra("username", getIntent().getStringExtra("username"));
-                startActivity(intent);
-                return true;
-            }
-
-            @Override
-            public boolean onQueryTextChange(String newText) {
-                return false;
-            }
-        });
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.user, menu);
+//        final SearchView searchView =
+//                (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.action_search));
+//        searchView.setQueryHint("输入要查找的单词");
+//        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+//            @Override
+//            public boolean onQueryTextSubmit(String query) {
+//                Intent intent = new Intent(UserActivity.this, MainActivity.class);
+//                intent.putExtra("query", query);
+//                intent.putExtra("username", getIntent().getStringExtra("username"));
+//                startActivity(intent);
+//                return true;
+//            }
+//
+//            @Override
+//            public boolean onQueryTextChange(String newText) {
+//                return false;
+//            }
+//        });
+//        return true;
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

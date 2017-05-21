@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
+import com.keshe.zhi.easywords.Activities.DownloadActivity;
 import com.keshe.zhi.easywords.Activities.R;
 import com.keshe.zhi.easywords.Activities.UserInfoActivity;
 
@@ -106,7 +107,7 @@ public class ProfileFragment extends Fragment {
                     case 3:
                         break;
                     case 4:
-
+                        startActivity(new Intent(getContext(), DownloadActivity.class));
                         break;
                     case 5:
                         break;

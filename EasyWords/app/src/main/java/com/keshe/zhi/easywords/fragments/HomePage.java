@@ -58,7 +58,7 @@ public class HomePage extends Fragment {
         SharedPreferences preferences = getActivity().getSharedPreferences(mAuth.getCurrentUser().getUid(), Context.MODE_PRIVATE);
         category.setText(preferences.getString("category","cet-6"));
         progress.setProgress(0);
-        progress_tv.setText("已完成:" + preferences.getString("today_finished", "0") + "/" + preferences.getString("today_words", " 0"));
+        progress_tv.setText("已完成:" + preferences.getString("today_finished", "0") + "/" + preferences.getString("today_words", "50"));
         last_days.setText(preferences.getString("last_days","0"));
         total_learned.setText(preferences.getString("total_learned","0"));
         today_words.setText(preferences.getString("today_words","50"));

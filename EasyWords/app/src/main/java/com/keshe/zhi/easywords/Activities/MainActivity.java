@@ -53,96 +53,96 @@ public class MainActivity extends AppCompatActivity {
         dbHelper = MyDatabaseHelper.getDbHelper(this);
         mean = (TextView) findViewById(R.id.textView);
         word = (TextView) findViewById(R.id.textView8);
-        isKeep = (CheckBox) findViewById(R.id.checkbox);
-        checkWordState(getIntent().getStringExtra("query"),getIntent().getStringExtra("username"));
-        isKeep.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    dbHelper.addToNote(dbHelper.getWritableDatabase(), getIntent().getStringExtra("query"), getIntent().getStringExtra("username"));
-                }else {
-                    dbHelper.reFroNote(dbHelper.getWritableDatabase(), getIntent().getStringExtra("query"), getIntent().getStringExtra("username"));
-                }
-            }
-        });
+//        isKeep = (CheckBox) findViewById(R.id.checkbox);
+////        checkWordState(getIntent().getStringExtra("query"),getIntent().getStringExtra("username"));
+//        isKeep.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+//                if (isChecked) {
+////                    dbHelper.addToNote(dbHelper.getWritableDatabase(), getIntent().getStringExtra("query"), getIntent().getStringExtra("username"));
+//                }else {
+////                    dbHelper.reFroNote(dbHelper.getWritableDatabase(), getIntent().getStringExtra("query"), getIntent().getStringExtra("username"));
+//                }
+//            }
+//        });
         ph_en = (Button) findViewById(R.id.button6);
         ph_am = (Button) findViewById(R.id.button7);
         Typeface tf=Typeface.createFromAsset(getAssets(), "segoeui.ttf");
         ph_am.setTypeface(tf);
         ph_en.setTypeface(tf);
         example = (TextView) findViewById(R.id.textView15);
-        shouResult();
-        handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                switch (msg.what) {
-                    case 0x1234:
-                        String result = msg.getData().getString("result");
-                        try {
-                            JSONObject root = new JSONObject(result);
-                            JSONObject data = root.getJSONObject("data");
-                            String id = data.getString("id");//单词id
-                            getExFromOL(id);
-                            JSONObject pronunciations = data.getJSONObject("pronunciations");
-                            s_ph_en = pronunciations.getString("uk");//英式音标
-                            s_ph_am = pronunciations.getString("us");//美式音标
-                            ph_en.setText(ph_en.getText() + " [" + s_ph_en + "]");
-                            ph_am.setText(ph_am.getText() + " [" + s_ph_am + "]");
-                            JSONObject audio_addresses = data.getJSONObject("audio_addresses");
-                            JSONArray uk = audio_addresses.getJSONArray("uk");
-                            JSONArray us = audio_addresses.getJSONArray("us");
-                            ph_en_mp3 = uk.getString(0);//英式发音
-                            ph_am_mp3 = us.getString(0);//美式发音
-                            JSONObject cn_definition = data.getJSONObject("cn_definition");
-                            String expl = cn_definition.getString("defn");
-                            mean.setText(expl);//中文解释
-                            map.put("mean", expl);
-                            map.put("ph_en", s_ph_en);
-                            map.put("ph_am", s_ph_am);
-                            map.put("ph_en_mp3", ph_en_mp3);
-                            map.put("ph_am_mp3", ph_am_mp3);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        break;
-                    case 0x1235:
-                        String result2 = msg.getData().getString("result");
-                        String sentence_ol = "";
-                        try {
-                            JSONObject root2 = new JSONObject(result2);
-                            JSONArray data = root2.getJSONArray("data");
-                            for (int i = 0; i < (data.length() > 2 ? 2 : data.length()); i++) {
-                                JSONObject sentence = data.getJSONObject(i);
-                                sentence_ol += sentence.getString("annotation").replaceAll("<vocab>", "").replaceAll("</vocab>", "") + "\n";
-                                sentence_ol += sentence.getString("translation") + "\n";
-                            }
-                            example.setText(sentence_ol);
-                            map.put("example", sentence_ol);
-                            if (dbHelper.insertOrupdate(dbHelper.getWritableDatabase(), map)){
-                                System.out.println("insert or update true");
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        break;
-                }
-            }
-        };
+//        shouResult();
+//        handler = new Handler() {
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                switch (msg.what) {
+//                    case 0x1234:
+//                        String result = msg.getData().getString("result");
+//                        try {
+//                            JSONObject root = new JSONObject(result);
+//                            JSONObject data = root.getJSONObject("data");
+//                            String id = data.getString("id");//单词id
+//                            getExFromOL(id);
+//                            JSONObject pronunciations = data.getJSONObject("pronunciations");
+//                            s_ph_en = pronunciations.getString("uk");//英式音标
+//                            s_ph_am = pronunciations.getString("us");//美式音标
+//                            ph_en.setText(ph_en.getText() + " [" + s_ph_en + "]");
+//                            ph_am.setText(ph_am.getText() + " [" + s_ph_am + "]");
+//                            JSONObject audio_addresses = data.getJSONObject("audio_addresses");
+//                            JSONArray uk = audio_addresses.getJSONArray("uk");
+//                            JSONArray us = audio_addresses.getJSONArray("us");
+//                            ph_en_mp3 = uk.getString(0);//英式发音
+//                            ph_am_mp3 = us.getString(0);//美式发音
+//                            JSONObject cn_definition = data.getJSONObject("cn_definition");
+//                            String expl = cn_definition.getString("defn");
+//                            mean.setText(expl);//中文解释
+//                            map.put("mean", expl);
+//                            map.put("ph_en", s_ph_en);
+//                            map.put("ph_am", s_ph_am);
+//                            map.put("ph_en_mp3", ph_en_mp3);
+//                            map.put("ph_am_mp3", ph_am_mp3);
+//                        } catch (Exception e) {
+//                            e.printStackTrace();
+//                        }
+//                        break;
+//                    case 0x1235:
+//                        String result2 = msg.getData().getString("result");
+//                        String sentence_ol = "";
+//                        try {
+//                            JSONObject root2 = new JSONObject(result2);
+//                            JSONArray data = root2.getJSONArray("data");
+//                            for (int i = 0; i < (data.length() > 2 ? 2 : data.length()); i++) {
+//                                JSONObject sentence = data.getJSONObject(i);
+//                                sentence_ol += sentence.getString("annotation").replaceAll("<vocab>", "").replaceAll("</vocab>", "") + "\n";
+//                                sentence_ol += sentence.getString("translation") + "\n";
+//                            }
+//                            example.setText(sentence_ol);
+//                            map.put("example", sentence_ol);
+//                            if (dbHelper.insertOrupdate(dbHelper.getWritableDatabase(), map)){
+//                                System.out.println("insert or update true");
+//                            }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                        break;
+//                }
+//            }
+//        };
     }
 
-    /**
-     * 检查单词是否已经加入单词本，改变checkbox状态
-     * @param word 单词
-     * @param name 用户名
-     */
-    private void checkWordState(String word,String name) {
-        if (dbHelper.isWordCollec(dbHelper.getReadableDatabase(), word, name)) {
-            isKeep.setChecked(true);
-        }else{
-            isKeep.setChecked(false);
-        }
-    }
+//    /**
+//     * 检查单词是否已经加入单词本，改变checkbox状态
+//     * @param word 单词
+//     * @param name 用户名
+//     */
+//    private void checkWordState(String word,String name) {
+//        if (dbHelper.isWordCollec(dbHelper.getReadableDatabase(), word, name)) {
+//            isKeep.setChecked(true);
+//        }else{
+//            isKeep.setChecked(false);
+//        }
+//    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -266,34 +266,34 @@ public class MainActivity extends AppCompatActivity {
         }).start();
     }
 
-    private void shouResult() {
-        final String tword = getIntent().getStringExtra("query");
-        map.put("word", tword);
-        try {
-            Cursor cursor = dbHelper.getWord(dbHelper.getReadableDatabase(), tword);
-            StringBuffer sb = new StringBuffer();
-            while (cursor.moveToNext()) {
-                if (cursor.getInt(cursor.getColumnIndex("isAll")) == 0) {
-                    getFromOnline(tword);
-                } else {
-                    word.setText(cursor.getString(cursor.getColumnIndex("words")));
-                    mean.setText(cursor.getString(cursor.getColumnIndex("meaning")));
-                    example.setText(cursor.getString(cursor.getColumnIndex("example")));
-                    s_ph_en = cursor.getString(cursor.getColumnIndex("ph_en"));
-                    s_ph_am = cursor.getString(cursor.getColumnIndex("ph_am"));
-                    ph_en_mp3 = cursor.getString(cursor.getColumnIndex("ph_en_mp3"));
-                    ph_am_mp3 = cursor.getString(cursor.getColumnIndex("ph_am_mp3"));
-                    ph_en.setText(ph_en.getText() + " [" + s_ph_en + "]");
-                    ph_am.setText(ph_am.getText() + " [" + s_ph_am + "]");
-                }
-            }
-            if (cursor.getCount() == 0) {//本地数据库没有，联网查询
-                getFromOnline(tword);
-            }
-            cursor.close();
-        } catch (Exception e) {
-            Toast.makeText(this, "未查到该单词", Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-    }
+//    private void shouResult() {
+//        final String tword = getIntent().getStringExtra("query");
+//        map.put("word", tword);
+//        try {
+//            Cursor cursor = dbHelper.getWord(dbHelper.getReadableDatabase(), tword);
+//            StringBuffer sb = new StringBuffer();
+//            while (cursor.moveToNext()) {
+//                if (cursor.getInt(cursor.getColumnIndex("isAll")) == 0) {
+//                    getFromOnline(tword);
+//                } else {
+//                    word.setText(cursor.getString(cursor.getColumnIndex("words")));
+//                    mean.setText(cursor.getString(cursor.getColumnIndex("meaning")));
+//                    example.setText(cursor.getString(cursor.getColumnIndex("example")));
+//                    s_ph_en = cursor.getString(cursor.getColumnIndex("ph_en"));
+//                    s_ph_am = cursor.getString(cursor.getColumnIndex("ph_am"));
+//                    ph_en_mp3 = cursor.getString(cursor.getColumnIndex("ph_en_mp3"));
+//                    ph_am_mp3 = cursor.getString(cursor.getColumnIndex("ph_am_mp3"));
+//                    ph_en.setText(ph_en.getText() + " [" + s_ph_en + "]");
+//                    ph_am.setText(ph_am.getText() + " [" + s_ph_am + "]");
+//                }
+//            }
+//            if (cursor.getCount() == 0) {//本地数据库没有，联网查询
+//                getFromOnline(tword);
+//            }
+//            cursor.close();
+//        } catch (Exception e) {
+//            Toast.makeText(this, "未查到该单词", Toast.LENGTH_SHORT).show();
+//            e.printStackTrace();
+//        }
+//    }
 }

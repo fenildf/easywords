@@ -2,16 +2,29 @@ package com.keshe.zhi.easywords.fragments;
 
 import android.content.Context;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.keshe.zhi.easywords.Activities.R;
-import com.keshe.zhi.easywords.words.WordInfo;
+import com.keshe.zhi.easywords.db.MyDatabaseHelper;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.Arrays;
 
 
 /**
@@ -23,6 +36,7 @@ import com.keshe.zhi.easywords.words.WordInfo;
  * create an instance of this fragment.
  */
 public class ReciteWord_show extends Fragment {
+    MyDatabaseHelper dbhelper;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String TODAY_WORDS = "today_words";
@@ -68,10 +82,58 @@ public class ReciteWord_show extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        dbhelper=MyDatabaseHelper.getDbHelper(getContext());
         // Inflate the layout for this fragment
-        Gson gson = new Gson();
-        gson.fromJson("", WordInfo.class);
-        return inflater.inflate(R.layout.fragment_recite_word_show, container, false);
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getAbsolutePath()+"/postgraduate.txt");
+        char[] chars = new char[200];
+        int len=-1;
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            Reader reader = new FileReader(file);
+            while ((len=reader.read(chars))!=-1) {
+                stringBuilder.append(new String(chars, 0, len));
+            }
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        try {
+            JSONArray array = new JSONArray(stringBuilder.toString());
+            System.out.println(array.length());
+            for (int i = 0; i < array.length(); i++) {
+                JSONObject object = array.getJSONObject(i);
+//                new MyThread(dbhelper,object,"cet6").start();
+                new AsyncTask<Object, Integer, Integer>() {
+                    @Override
+                    protected Integer doInBackground(Object... params) {
+                        int result=0;
+                        if (((MyDatabaseHelper)params[0]).saveToDb(((MyDatabaseHelper)params[0]).getWritableDatabase(),(JSONObject)params[1],(String)params[2])) {
+                            System.out.println("已保存到数据库");
+                        }
+                        return result;
+                    }
+
+                    @Override
+                    protected void onProgressUpdate(Integer... values) {
+                        super.onProgressUpdate(values);
+                    }
+
+                    @Override
+                    protected void onPostExecute(Integer integer) {
+                        super.onPostExecute(integer);
+//                        if (integer == 100) {
+//                            Toast.makeText(getContext(),"完成",Toast.LENGTH_SHORT).show();
+//                        }
+                    }
+                }.execute(dbhelper,object,"kaoyan");
+            }
+            Toast.makeText(getContext(),"完成",Toast.LENGTH_SHORT).show();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        View view =inflater.inflate(R.layout.fragment_recite_word_show, container, false);
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -111,5 +173,25 @@ public class ReciteWord_show extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    private static class MyThread extends Thread{
+        MyDatabaseHelper databaseHelper;
+        JSONObject object;
+        String table;
+
+        MyThread(MyDatabaseHelper dbhelper, JSONObject object, String table) {
+            this.databaseHelper=dbhelper;
+            this.object=object;
+            this.table=table;
+        }
+
+        @Override
+        public void run() {
+            if (databaseHelper.saveToDb(databaseHelper.getWritableDatabase(),object,"cet6")) {
+                System.out.println("已保存到数据库");
+            }
+        }
+
     }
 }

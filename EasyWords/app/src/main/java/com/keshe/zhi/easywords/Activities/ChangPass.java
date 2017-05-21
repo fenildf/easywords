@@ -28,20 +28,20 @@ public class ChangPass extends AppCompatActivity {
     }
 
 
-    public void changePass(View view) {
-        String tv_op = oldpass.getText().toString();
-        String tv_np = newpass.getText().toString();
-        String tv_np2 = newpass2.getText().toString();
-        if (!tv_np.equals(tv_np2)) {
-            Toast.makeText(this, "密码输入不一致", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        if (dbHelper.changePass(dbHelper.getWritableDatabase(), getIntent().getStringExtra("username"), tv_op,tv_np)) {
-            Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this,LoginActivity.class);
-            startActivity(intent);
-        } else {
-            Toast.makeText(this, "修改失败", Toast.LENGTH_SHORT).show();
-        }
-    }
+//    public void changePass(View view) {
+//        String tv_op = oldpass.getText().toString();
+//        String tv_np = newpass.getText().toString();
+//        String tv_np2 = newpass2.getText().toString();
+//        if (!tv_np.equals(tv_np2)) {
+//            Toast.makeText(this, "密码输入不一致", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//        if (dbHelper.changePass(dbHelper.getWritableDatabase(), getIntent().getStringExtra("username"), tv_op,tv_np)) {
+//            Toast.makeText(this, "修改成功", Toast.LENGTH_SHORT).show();
+//            Intent intent = new Intent(this,LoginActivity.class);
+//            startActivity(intent);
+//        } else {
+//            Toast.makeText(this, "修改失败", Toast.LENGTH_SHORT).show();
+//        }
+//    }
 }

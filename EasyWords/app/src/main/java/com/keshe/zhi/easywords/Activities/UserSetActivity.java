@@ -63,13 +63,13 @@ public class UserSetActivity extends AppCompatActivity {
                         android.support.v7.app.AlertDialog.Builder builder = new AlertDialog.Builder(UserSetActivity.this);
                         builder.setTitle("设置学习量");
                         builder.setView(view1);
-                        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                int today_words = Integer.valueOf((String) total.getSelectedItem());
-                                dbHelper.setToday(dbHelper.getWritableDatabase(), today_words, Integer.valueOf(ntotal.getText().toString()), getIntent().getStringExtra("username"));
-                            }
-                        });
+//                        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialog, int which) {
+//                                int today_words = Integer.valueOf((String) total.getSelectedItem());
+//                                dbHelper.setToday(dbHelper.getWritableDatabase(), today_words, Integer.valueOf(ntotal.getText().toString()), getIntent().getStringExtra("username"));
+//                            }
+//                        });
                         builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

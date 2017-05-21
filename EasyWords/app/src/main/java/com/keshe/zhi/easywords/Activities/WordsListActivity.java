@@ -54,8 +54,8 @@ public class WordsListActivity extends AppCompatActivity {
                 startActivity(intent);
                 break;
             case R.id.cancel:
-                dbHelper.reFroNote(dbHelper.getWritableDatabase(), ((TextView) ll.findViewById(R.id.textView25)).getText().toString(), getIntent().getStringExtra("username"));
-                onResume();
+//                dbHelper.reFroNote(dbHelper.getWritableDatabase(), ((TextView) ll.findViewById(R.id.textView25)).getText().toString(), getIntent().getStringExtra("username"));
+//                onResume();
                 break;
         }
         return super.onContextItemSelected(item);
@@ -65,48 +65,48 @@ public class WordsListActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         dbHelper = MyDatabaseHelper.getDbHelper(this);
-        final Cursor cursor = dbHelper.getUsersWord(dbHelper.getReadableDatabase(), getIntent().getStringExtra("username"));
+//        final Cursor cursor = dbHelper.getUsersWord(dbHelper.getReadableDatabase(), getIntent().getStringExtra("username"));
         final List<Map<String, String>> list = new ArrayList<>();
-        while (cursor.moveToNext()) {
-            Map<String, String> map = new HashMap<>();
-            map.put("word", cursor.getString(cursor.getColumnIndex("word")));
-            map.put("username", cursor.getString(cursor.getColumnIndex("username")));
-            list.add(map);
-        }
+//        while (cursor.moveToNext()) {
+//            Map<String, String> map = new HashMap<>();
+//            map.put("word", cursor.getString(cursor.getColumnIndex("word")));
+//            map.put("username", cursor.getString(cursor.getColumnIndex("username")));
+//            list.add(map);
+//        }
         wordList = (ListView) findViewById(R.id.wordlist);
         registerForContextMenu(wordList);
-        BaseAdapter baseAdapter = new BaseAdapter() {
-            @Override
-            public int getCount() {
-                return cursor.getCount();
-            }
-
-            @Override
-            public Object getItem(int position) {
-                return list.get(position);
-            }
-
-            @Override
-            public long getItemId(int position) {
-                return position;
-            }
-
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                ViewHolder viewHolder;
-                if (convertView == null) {
-                    convertView = LayoutInflater.from(WordsListActivity.this).inflate(R.layout.listitem, null);
-                    viewHolder = new ViewHolder();
-                    viewHolder.textView = (TextView) convertView.findViewById(R.id.textView25);
-                    convertView.setTag(viewHolder);
-                } else {
-                    viewHolder = (ViewHolder) convertView.getTag();
-                }
-                viewHolder.textView.setText((String) ((Map) list.get(position)).get("word"));
-                return convertView;
-            }
-        };
-        wordList.setAdapter(baseAdapter);
-        cursor.close();
+//        BaseAdapter baseAdapter = new BaseAdapter() {
+//            @Override
+//            public int getCount() {
+//                return cursor.getCount();
+//            }
+//
+//            @Override
+//            public Object getItem(int position) {
+//                return list.get(position);
+//            }
+//
+//            @Override
+//            public long getItemId(int position) {
+//                return position;
+//            }
+//
+//            @Override
+//            public View getView(int position, View convertView, ViewGroup parent) {
+//                ViewHolder viewHolder;
+//                if (convertView == null) {
+//                    convertView = LayoutInflater.from(WordsListActivity.this).inflate(R.layout.listitem, null);
+//                    viewHolder = new ViewHolder();
+//                    viewHolder.textView = (TextView) convertView.findViewById(R.id.textView25);
+//                    convertView.setTag(viewHolder);
+//                } else {
+//                    viewHolder = (ViewHolder) convertView.getTag();
+//                }
+//                viewHolder.textView.setText((String) ((Map) list.get(position)).get("word"));
+//                return convertView;
+//            }
+//        };
+//        wordList.setAdapter(baseAdapter);
+//        cursor.close();
     }
 }

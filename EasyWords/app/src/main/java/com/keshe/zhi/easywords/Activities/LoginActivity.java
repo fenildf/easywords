@@ -67,8 +67,11 @@ public class LoginActivity extends AppCompatActivity {
 
     public void checkInNow(View view) {
         final AlertDialog alertDialog = new AlertDialog.Builder(this).setCancelable(false).setView(R.layout.doing_some).create();
-        String uname = name.getText().toString().trim();
-        String pass = passwd.getText().toString().trim();
+//        String uname = name.getText().toString().trim();
+//        String pass = passwd.getText().toString().trim();
+        String uname = "18624323501";
+        String pass = "771929558";
+
         if ("".equals(uname) || "".equals(pass)) {
             Toast.makeText(this, "输入不能为空", Toast.LENGTH_SHORT).show();
             tip.setText("输入不能为空");
