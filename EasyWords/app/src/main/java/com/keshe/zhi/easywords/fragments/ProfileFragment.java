@@ -1,6 +1,7 @@
 package com.keshe.zhi.easywords.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +13,7 @@ import android.widget.ListView;
 import android.widget.SimpleAdapter;
 
 import com.keshe.zhi.easywords.Activities.R;
+import com.keshe.zhi.easywords.Activities.UserInfoActivity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -95,6 +97,7 @@ public class ProfileFragment extends Fragment {
                 System.out.println("position:" + position);
                 switch (position) {
                     case 0:
+                        startActivity(new Intent(getContext(), UserInfoActivity.class));
                         break;
                     case 1:
                         break;
@@ -103,6 +106,7 @@ public class ProfileFragment extends Fragment {
                     case 3:
                         break;
                     case 4:
+
                         break;
                     case 5:
                         break;

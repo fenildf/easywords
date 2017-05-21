@@ -8,7 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.keshe.zhi.easywords.Activities.R;
+import com.keshe.zhi.easywords.words.WordInfo;
 
 
 /**
@@ -22,12 +25,12 @@ import com.keshe.zhi.easywords.Activities.R;
 public class ReciteWord_show extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private static final String TODAY_WORDS = "today_words";
+    private static final String TODAY_FINISHED = "today_finished";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private String today_words;
+    private String today_finished;
 
     private OnFragmentInteractionListener mListener;
 
@@ -39,16 +42,16 @@ public class ReciteWord_show extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param today_words Parameter 1.
+     * @param today_finished Parameter 2.
      * @return A new instance of fragment ReciteWord_show.
      */
     // TODO: Rename and change types and number of parameters
-    public static ReciteWord_show newInstance(String param1, String param2) {
+    public static ReciteWord_show newInstance(String today_words, String today_finished) {
         ReciteWord_show fragment = new ReciteWord_show();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(TODAY_WORDS, today_words);
+        args.putString(TODAY_FINISHED, today_finished);
         fragment.setArguments(args);
         return fragment;
     }
@@ -57,8 +60,8 @@ public class ReciteWord_show extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            today_words = getArguments().getString(TODAY_WORDS);
+            today_finished = getArguments().getString(TODAY_FINISHED);
         }
     }
 
@@ -66,6 +69,8 @@ public class ReciteWord_show extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Gson gson = new Gson();
+        gson.fromJson("", WordInfo.class);
         return inflater.inflate(R.layout.fragment_recite_word_show, container, false);
     }
 

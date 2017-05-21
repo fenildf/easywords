@@ -57,7 +57,7 @@
             android:name=".RegisterActivity"
             android:label="注册"
             android:parentActivityName=".EntryActivity"
-            android:theme="@style/NoActionBar"></activity>
+            android:theme="@style/NoActionBar" />
         <activity
             android:name=".UserActivity"
             android:label="背单词"
@@ -71,7 +71,7 @@
         <activity
             android:name=".ReciteWordActivity"
             android:label="背单词"
-            android:theme="@style/NoActionBar"></activity>
+            android:theme="@style/NoActionBar" />
         <activity
             android:name=".ChangPass"
             android:label="更改密码" />
@@ -85,10 +85,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".UserInfoActivity"
-            android:theme="@style/NoActionBar">
-
-        </activity>
+        <activity
+            android:name=".UserInfoActivity"
+            android:theme="@style/NoActionBar"></activity>
+        <activity android:name=".DownloadActivity"></activity>
     </application>
 
 </manifest>

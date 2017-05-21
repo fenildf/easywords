@@ -20,6 +20,8 @@ import android.widget.Toast;
 import com.keshe.zhi.easywords.Activities.LoginActivity;
 import com.keshe.zhi.easywords.Activities.R;
 import com.keshe.zhi.easywords.utils.GenCode;
+import com.wilddog.client.SyncReference;
+import com.wilddog.client.WilddogSync;
 import com.wilddog.wilddogauth.WilddogAuth;
 import com.wilddog.wilddogauth.core.Task;
 import com.wilddog.wilddogauth.core.listener.OnCompleteListener;
@@ -27,6 +29,8 @@ import com.wilddog.wilddogauth.core.result.AuthResult;
 import com.wilddog.wilddogauth.model.WilddogUser;
 import com.wilddog.wilddogcore.WilddogApp;
 import com.wilddog.wilddogcore.WilddogOptions;
+
+import java.util.HashMap;
 
 
 /**
@@ -142,6 +146,24 @@ public class RegByMail extends Fragment {
                                             WilddogUser user = task.getResult().getWilddogUser();
                                             Log.d("result", user.toString());
                                             alertDialog.dismiss();
+                                            String uid = user.getUid();
+                                            //在users下新建一个节点
+                                            SyncReference ref = WilddogSync.getInstance().getReference();
+                                            HashMap<String,String> userinfo = new HashMap<String, String>();
+                                            userinfo.put("uid",uid);
+                                            userinfo.put("today_words","50");
+                                            userinfo.put("today_new_words","8");
+                                            userinfo.put("today_progress", "0");
+                                            userinfo.put("study_pattern","yes_no");
+                                            userinfo.put("last_days","10");
+                                            userinfo.put("category","cet6");
+                                            SyncReference chiref=ref.child("users").push();
+                                            chiref.setValue(userinfo);
+                                            //将用户节点-uid对应关系保存到user_key节点下
+                                            HashMap<String,String> user_key = new HashMap<String, String>();
+                                            user_key.put(uid,chiref.getKey());
+                                            ref.child("user_key").setValue(user_key);
+
                                             Toast.makeText(getContext(), "创建成功", Toast.LENGTH_SHORT).show();
                                             Intent intent = new Intent(getContext(), LoginActivity.class);
                                             startActivity(intent);
