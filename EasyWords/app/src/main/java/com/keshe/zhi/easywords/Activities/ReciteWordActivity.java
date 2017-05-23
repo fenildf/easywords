@@ -1,74 +1,76 @@
 package com.keshe.zhi.easywords.Activities;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
-import android.graphics.Typeface;
-import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Handler;
-import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Gravity;
-import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.keshe.zhi.easywords.db.MyDatabaseHelper;
 import com.keshe.zhi.easywords.fragments.ReciteWord_show;
-import com.keshe.zhi.easywords.fragments.RegByMail;
 import com.keshe.zhi.easywords.fragments.WordMean;
 import com.wilddog.wilddogauth.WilddogAuth;
 import com.wilddog.wilddogcore.WilddogApp;
 import com.wilddog.wilddogcore.WilddogOptions;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import java.util.Random;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-public class ReciteWordActivity extends AppCompatActivity implements ReciteWord_show.OnFragmentInteractionListener,WordMean.OnFragmentInteractionListener {
+public class ReciteWordActivity extends AppCompatActivity implements ReciteWord_show.OnFragmentInteractionListener, WordMean.OnFragmentInteractionListener {
     MyDatabaseHelper dbHelper = null;
-    TextView word = null;
-    Button ph_en_mp3 = null;
-    Button ph_am_mp3 = null;
-    RelativeLayout rl = null;
-    RelativeLayout rl1 = null;
-    TextView mean = null;
-    Handler handler = null;
-    Button yes = null;
-    Button no = null;
-    String uri_ph_en_mp3 = "";
-    String uri_ph_am_mp3 = "";
-    Cursor today_words = null;
-    String s_ph_en = "";
-    String s_ph_am = "";
-    int last_pos = 0;
-
+    String table = "";
+    WilddogAuth mAuth;
+    TextView progress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recite_word);
+        dbHelper = MyDatabaseHelper.getDbHelper(this);
+        progress = (TextView) findViewById(R.id.textView47);
         WilddogOptions options = new WilddogOptions.Builder().setSyncUrl("https://bishe.wilddogio.com").build();
         WilddogApp.initializeApp(this, options);
-        WilddogAuth mAuth = WilddogAuth.getInstance();
+        mAuth = WilddogAuth.getInstance();
         SharedPreferences preferences = getSharedPreferences(mAuth.getCurrentUser().getUid(), MODE_PRIVATE);
+        //词库
+        table = preferences.getString("category", "cet6");
+        //学习模式
         String study_pattern = preferences.getString("study_pattern", "yes_no");
         //今日单词总数
-        String today_words = preferences.getString("today_words", "50");
+        String today_words = preferences.getString("today_words", "20");
         //今日完成总数
         String today_finished = preferences.getString("today_finished", "0");
+        //今日新词总数
+        String today_new_words = preferences.getString("today_new_words", "3");
+
+        progress.setText(today_finished+"/"+today_words);
+
+        //今日单词是否已经准备了
+        String isReady = preferences.getString("isReady", "false");
+
+        if ("false".equals(isReady)) {
+            System.out.println("ReciteWordActivity-onCreate:not ready");
+            dbHelper.prepareTodayWords(dbHelper.getWritableDatabase(), today_words, table, today_new_words);
+            SharedPreferences.Editor editor = preferences.edit();
+            editor.putString("isReady", "true");
+            editor.apply();
+        }
+
+
         //判断学习模式
         switch (study_pattern) {
             case "yes_no"://认识或不认识
-                getSupportFragmentManager().beginTransaction().replace(R.id.word_content, ReciteWord_show.newInstance(today_words,today_finished)).commit();
+                Cursor cursor = dbHelper.todayWordsInfo(dbHelper.getWritableDatabase(), table);
+                String word = "";
+                String pron = "";
+                if (!cursor.isLast() && !(cursor.getCount() == 0)) {
+                    cursor.moveToNext();
+                    word = cursor.getString(cursor.getColumnIndex("content"));
+                    pron = cursor.getString(cursor.getColumnIndex("music_path"));
+                    getSupportFragmentManager().beginTransaction().replace(R.id.word_content, ReciteWord_show.newInstance(word, table, pron)).commit();
+                }
                 break;
             case "pick_means"://选择意思
                 break;
@@ -81,8 +83,40 @@ public class ReciteWordActivity extends AppCompatActivity implements ReciteWord_
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onFragmentInteraction(String info) {
+        switch (info) {
+            case "next":
+                Cursor cursor = dbHelper.todayWordsInfo(dbHelper.getWritableDatabase(), table);
 
+                //更新进度提示
+                SharedPreferences sp = getSharedPreferences(mAuth.getCurrentUser().getUid(), MODE_PRIVATE);
+                String today_words=sp.getString("today_words", "20");
+                String today_finished = String.valueOf(Integer.parseInt(today_words)-cursor.getCount());
+                sp.edit().putString("today_finished",today_finished).apply();
+                progress.setText(today_finished+"/"+today_words);
+
+                String word = "";
+                String pron = "";
+                System.out.println("ReciteWordActivity-OnFragmentInteraction:cursor count:" + cursor.getCount());
+                if (!cursor.isLast() && !(cursor.getCount() == 0)) {
+//                    cursor.moveToNext();
+                    cursor.move(new Random().nextInt(cursor.getCount())+1);
+                    System.out.println("ReciteWordActivity-OnFragmentInteraction:movetonext");
+                    word = cursor.getString(cursor.getColumnIndex("content"));
+                    pron = cursor.getString(cursor.getColumnIndex("music_path"));
+                    getSupportFragmentManager().beginTransaction().replace(R.id.word_content, ReciteWord_show.newInstance(word, table, pron)).commit();
+                } else {
+                    System.out.println("ReciteWordActivity-OnFragmentInteraction:reach last");
+                    System.out.println("ReciteWordActivity-OnFragmentInteraction:今日单词已完成");
+                    
+                    onBackPressed();
+                }
+                cursor.close();
+                break;
+            default:
+                getSupportFragmentManager().beginTransaction().replace(R.id.word_content, WordMean.newInstance(info, table)).commit();
+                break;
+        }
     }
 
 //    public void pron_en(View view) {
@@ -302,4 +336,10 @@ public class ReciteWordActivity extends AppCompatActivity implements ReciteWord_
 //                break;
 //        }
 //    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 }

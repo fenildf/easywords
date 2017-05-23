@@ -2,27 +2,30 @@ package com.keshe.zhi.easywords.db;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.wilddog.wilddogauth.WilddogAuth;
+import com.wilddog.wilddogcore.WilddogApp;
+import com.wilddog.wilddogcore.WilddogOptions;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.Map;
+import java.text.SimpleDateFormat;
 
 /**
  * Created by zhi on 2016/12/31 0031.
  */
 
 public class MyDatabaseHelper extends SQLiteOpenHelper {
-    //用户表
-    final String CREATE_USER_TABLE_SQL = "create table user(_id integer primary key autoincrement,name text,passwd text);";
-    //六级词汇表
-    final String create_cet6_table_sql = "create table cet6(words text primary key,meaning text,example text);";
+    Context context;
 
     public MyDatabaseHelper(Context context) {
         super(context, "easy_word.db", null, 1);
+        this.context=context;
     }
 
     public static MyDatabaseHelper getDbHelper(Context context) {
@@ -37,7 +40,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
      * @param table
      * @return
      */
-    public boolean saveToDb(SQLiteDatabase database, JSONObject object,String table) {
+    public boolean saveToDb(SQLiteDatabase database, JSONObject object, String table) {
         long result = -1;
         try {
             String analyzes = object.getString("analyzes");//单词意思
@@ -45,6 +48,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             String audio_path_an = object.getString("audio_path_an");//
             String audio_path_en = object.getString("audio_path_en");
             String example_en = object.getString("example_en");
+            String example_zh = object.getString("example_zh");
             String favorite = object.getString("favorite");
             String id = object.getString("id");
             String music_path = object.getString("music_path");
@@ -54,26 +58,88 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
             String word_id = object.getString("word_id");
 
             ContentValues contentValues = new ContentValues();
-            contentValues.put("analyzes",analyzes);
-            contentValues.put("content",content);
-            contentValues.put("audio_path_an",audio_path_an);
-            contentValues.put("audio_path_en",audio_path_en);
-            contentValues.put("example_en",example_en);
-            contentValues.put("favorite",favorite);
-            contentValues.put("id",id);
-            contentValues.put("music_path",music_path);
-            contentValues.put("phonogram_an",phonogram_an);
-            contentValues.put("phonogram_en",phonogram_en);
-            contentValues.put("sortNum",sortNum);
-            contentValues.put("word_id",word_id);
+            contentValues.put("analyzes", analyzes);
+            contentValues.put("content", content);
+            contentValues.put("audio_path_an", audio_path_an);
+            contentValues.put("audio_path_en", audio_path_en);
+            contentValues.put("example_en", example_en);
+            contentValues.put("example_zh", example_zh);
+            contentValues.put("favorite", favorite);
+            contentValues.put("id", id);
+            contentValues.put("music_path", music_path);
+            contentValues.put("phonogram_an", phonogram_an);
+            contentValues.put("phonogram_en", phonogram_en);
+            contentValues.put("sortNum", sortNum);
+            contentValues.put("word_id", word_id);
 
-            result=database.insert(table,null,contentValues);
+            result = database.insert(table, null, contentValues);
 
         } catch (JSONException e) {
             e.printStackTrace();
+        } finally {
+            database.close();
         }
 
-        return result!=-1;
+        return result != -1;
+    }
+
+
+    /**
+     * 准备今日要复习的单词
+     *
+     * @param database
+     * @param count           今日复习总数
+     * @param table_name      用户当前词库
+     * @param today_new_words 今日新词数量
+     */
+    public void prepareTodayWords(SQLiteDatabase database, String count, String table_name, String today_new_words) {
+
+        //查询用户已学习单词总数
+        Cursor cursor1 = database.rawQuery("select count(*) from user_record where table_name='" + table_name + "'", null);
+        int learned_count = 0;
+        while (cursor1.moveToNext()) {
+            learned_count = Integer.parseInt(cursor1.getString(0));
+        }
+
+        cursor1.close();
+
+        int from_learned = 0;
+        int from_new = 0;
+        //如果用户学习过的次数大于今日总词数-新词数
+        if (learned_count >= (Integer.parseInt(count) - Integer.parseInt(today_new_words))) {
+            from_new = Integer.parseInt(today_new_words);
+            from_learned = Integer.parseInt(count) - Integer.parseInt(today_new_words);
+        } else {
+            from_learned = learned_count;
+            from_new = Integer.parseInt(count) - learned_count;
+        }
+
+
+        //select sortNum from table_name where no exists
+        // (select*from user_record where user_record.word_num=table_name.sortNum) limit count
+        //从已学单词表和词库中选出指定数量的单词
+        Cursor cursor2 = database.rawQuery("select*from(select sortNum from " + table_name + " where not exists " +
+                "(select*from user_record where user_record.word_num=" + table_name + ".sortNum) limit " + from_new + ") union select*from(select word_num" +
+                " from user_record where table_name='" + table_name + "' limit " + from_learned + ")", null);
+
+
+        //将今日要学习的单词的id存到今日要学习的单词表中
+        while (cursor2.moveToNext()) {
+            ContentValues contentValues = new ContentValues();
+            contentValues.put("table_name", table_name);
+            contentValues.put("word_num", cursor2.getString(0));
+            database.insert("words_today", null, contentValues);
+        }
+
+        cursor2.close();
+
+    }
+
+
+    public Cursor todayWordsInfo(SQLiteDatabase database, String tablename) {
+
+        return database.rawQuery("select*from " + tablename + " where exists (select*from words_today where " +
+                "table_name='" + tablename + "' and words_today.word_num=" + tablename + ".sortNum and words_today.is_finished=0)", null);
     }
 
     @Override
@@ -82,12 +148,11 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 //        sqLiteDatabase.execSQL(create_cet6_table_sql);
     }
 
-    /**
-     * 根据单词从数据库中查询该单词所有信息
-     *
-     * @return 返回数据库游标
-     */
-
+//    /**
+//     * 根据单词从数据库中查询该单词所有信息
+//     *
+//     * @return 返回数据库游标
+//     */
 //    public Cursor getWord(SQLiteDatabase db, String word) {
 //        try {
 //            Cursor cursor = null;
@@ -98,9 +163,61 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 //        }
 //        return null;
 //    }
+
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
 
+    }
+
+    /**
+     * 设置该单词is_finished标记
+     *
+     * @param writableDatabase
+     * @param table_name
+     * @param word_mean
+     */
+    public void setWordFinished(SQLiteDatabase writableDatabase, String table_name, String word_mean) {
+        Cursor cursor = writableDatabase.rawQuery("select sortNum from " + table_name + " where content='" + word_mean + "'", null);
+        String word_num = "";
+        while (cursor.moveToNext()) {
+            word_num = cursor.getString(0);
+        }
+        cursor.close();
+
+        //加入已学习表
+        Cursor cursor2 = writableDatabase.rawQuery("select*from user_record where table_name=? and word_num=?", new String[]{table_name, word_num});
+        if (cursor2.getCount() == 0) {//如果表中已有，则不插入
+            ContentValues contentValues1 = new ContentValues();
+            contentValues1.put("table_name", table_name);
+            contentValues1.put("word_num", word_num);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+            String date = simpleDateFormat.format(System.currentTimeMillis());
+            contentValues1.put("finishtime", date);
+            writableDatabase.insert("user_record", null, contentValues1);
+        }
+
+        cursor2.close();
+
+        Cursor cursor3 =writableDatabase.rawQuery("select*from user_record where table_name=?", new String[]{table_name});
+        WilddogOptions options = new WilddogOptions.Builder().setSyncUrl("https://bishe.wilddogio.com").build();
+        WilddogApp.initializeApp(context, options);
+        final WilddogAuth mAuth = WilddogAuth.getInstance();
+        SharedPreferences sp = context.getSharedPreferences(mAuth.getCurrentUser().getUid(), Context.MODE_PRIVATE);
+        sp.edit().putString("total_learned", String.valueOf(cursor3.getCount())).apply();
+        cursor3.close();
+
+        //在今日单词表中将该单词标记为完成
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("is_finished", 1);
+        writableDatabase.update("words_today", contentValues, "table_name=? and word_num=?", new String[]{table_name, word_num});
+    }
+
+    public Cursor getWordMean(SQLiteDatabase writableDatabase, String table, String word) {
+        return writableDatabase.rawQuery("select*from " + table + " where content='" + word + "'", null);
+    }
+
+    public void cleanWordsToday(SQLiteDatabase writableDatabase, String category) {
+        writableDatabase.delete("words_today", "table_name=?", new String[]{category});
     }
 
     /**

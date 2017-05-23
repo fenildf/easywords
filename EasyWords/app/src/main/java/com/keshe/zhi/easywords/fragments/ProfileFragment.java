@@ -14,7 +14,14 @@ import android.widget.SimpleAdapter;
 
 import com.keshe.zhi.easywords.Activities.DownloadActivity;
 import com.keshe.zhi.easywords.Activities.R;
+import com.keshe.zhi.easywords.Activities.SettingsActivity;
+import com.keshe.zhi.easywords.Activities.StudySettings;
 import com.keshe.zhi.easywords.Activities.UserInfoActivity;
+import com.wilddog.client.SyncReference;
+import com.wilddog.client.WilddogSync;
+import com.wilddog.wilddogauth.WilddogAuth;
+import com.wilddog.wilddogcore.WilddogApp;
+import com.wilddog.wilddogcore.WilddogOptions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -90,6 +97,13 @@ public class ProfileFragment extends Fragment {
             listem.put("text", keys[i]);
             list.add(listem);
         }
+
+        //初始化
+        WilddogOptions options = new WilddogOptions.Builder().setSyncUrl("https://bishe.wilddogio.com").build();
+        WilddogApp.initializeApp(getContext(), options);
+        SyncReference ref = WilddogSync.getInstance().getReference();
+        final WilddogAuth mAuth = WilddogAuth.getInstance();
+
         SimpleAdapter simpleAdapter = new SimpleAdapter(getContext(), list, R.layout.list_item, new String[]{"pic", "text"}, new int[]{R.id.imageView19, R.id.textView64});
         listView.setAdapter(simpleAdapter);
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -98,20 +112,29 @@ public class ProfileFragment extends Fragment {
                 System.out.println("position:" + position);
                 switch (position) {
                     case 0:
+                        //我的信息
                         startActivity(new Intent(getContext(), UserInfoActivity.class));
                         break;
                     case 1:
+                        //学习设置
+                        startActivity(new Intent(getContext(), StudySettings.class));
                         break;
                     case 2:
+                        //单词本
                         break;
                     case 3:
+                        //提醒设置
                         break;
                     case 4:
+                        //离线包下载
                         startActivity(new Intent(getContext(), DownloadActivity.class));
                         break;
                     case 5:
+                        //学习情况
                         break;
                     case 6:
+                        //设置
+                        startActivity(new Intent(getContext(), SettingsActivity.class));
                         break;
                 }
             }

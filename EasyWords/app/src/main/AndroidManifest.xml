@@ -45,13 +45,11 @@
             android:label="登录"
             android:parentActivityName=".EntryActivity"
             android:theme="@style/NoActionBar2">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-             <intent-filter>
-             <action android:name="android.intent.action.MAIN" />
-
-
-             <category android:name="android.intent.category.LAUNCHER" />
-             </intent-filter>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity
             android:name=".RegisterActivity"
@@ -79,11 +77,13 @@
             android:name=".UserActivity2"
             android:label="@string/title_activity_user2"
             android:theme="@style/NoActionBar">
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
         <activity
             android:name=".UserInfoActivity"
@@ -91,6 +91,10 @@
         <activity
             android:name=".DownloadActivity"
             android:theme="@style/NoActionBar"></activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:theme="@style/NoActionBar"></activity>
+        <activity android:name=".StudySettings" android:theme="@style/NoActionBar"></activity>
     </application>
 
 </manifest>

@@ -1,11 +1,6 @@
 package com.keshe.zhi.easywords.Activities;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.graphics.Color;
-import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,7 +10,6 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.keshe.zhi.easywords.db.MyDatabaseHelper;
 import com.wilddog.wilddogauth.WilddogAuth;
 import com.wilddog.wilddogauth.core.Task;
@@ -23,6 +17,14 @@ import com.wilddog.wilddogauth.core.listener.OnCompleteListener;
 import com.wilddog.wilddogauth.core.result.AuthResult;
 import com.wilddog.wilddogcore.WilddogApp;
 import com.wilddog.wilddogcore.WilddogOptions;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import static java.security.AccessController.getContext;
 
 public class LoginActivity extends AppCompatActivity {
     MyDatabaseHelper dbHelper = null;
@@ -30,6 +32,32 @@ public class LoginActivity extends AppCompatActivity {
     EditText passwd = null;
     TextView tip = null;
     WilddogAuth mAuth;
+    MyDatabaseHelper databaseHelper;
+
+    /**
+     * 将/res/raw中的数据库复制到默认数据库创建的位置
+     * @param file 数据库文件
+     */
+    public void saveToSDcard(File file) {
+        System.out.println("正在复制数据库");
+        InputStream is = this.getResources().openRawResource(R.raw.easy_word);
+        try {
+            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
+            BufferedInputStream bis = new BufferedInputStream(is);
+            byte[] buffer = new byte[1000];
+            int len = 0;
+            while ((len = bis.read(buffer)) != -1) {
+                bos.write(buffer, 0, len);
+            }
+            bis.close();
+            bos.close();
+            is.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            System.out.println("数据库复制成功");
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +67,85 @@ public class LoginActivity extends AppCompatActivity {
         name = (EditText) findViewById(R.id.editText9);
         passwd = (EditText) findViewById(R.id.editText11);
         tip = (TextView) findViewById(R.id.textView58);
+        databaseHelper=MyDatabaseHelper.getDbHelper(this);
+
+        File file = this.getDatabasePath(dbHelper.getDatabaseName());
+        System.out.println(file.getAbsolutePath());
+        if (!file.exists()) {//数据库文件不存在则创建
+            System.out.println("数据库不存在");
+            File pfile = file.getParentFile();
+            if (!pfile.exists()) {//父级目录不存在则创建
+                if (pfile.mkdir()){
+                    try {
+                        if (!file.createNewFile()) {
+                            Toast.makeText(this,"数据库未复制成功",Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        saveToSDcard(file);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }else {
+                try {
+                    if (!file.createNewFile()) {
+                        Toast.makeText(this,"数据库未复制成功",Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    saveToSDcard(file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+//        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MUSIC).getAbsolutePath()+"/cet-6.txt");
+//        char[] chars = new char[200];
+//        int len=-1;
+//        StringBuilder stringBuilder = new StringBuilder();
+//        try {
+//            Reader reader = new FileReader(file);
+//            while ((len=reader.read(chars))!=-1) {
+//                stringBuilder.append(new String(chars, 0, len));
+//            }
+//            reader.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//            JSONArray array = new JSONArray(stringBuilder.toString());
+//            System.out.println(array.length());
+//            for (int i = 0; i < array.length(); i++) {
+//                JSONObject object = array.getJSONObject(i);
+////                new MyThread(dbhelper,object,"cet6").start();
+//                new AsyncTask<Object, Integer, Integer>() {
+//                    @Override
+//                    protected Integer doInBackground(Object... params) {
+//                        int result=0;
+//                        if (((MyDatabaseHelper)params[0]).saveToDb(((MyDatabaseHelper)params[0]).getWritableDatabase(),(JSONObject)params[1],(String)params[2])) {
+//                            System.out.println("已保存到数据库");
+//                        }
+//                        return result;
+//                    }
+//
+//                    @Override
+//                    protected void onProgressUpdate(Integer... values) {
+//                        super.onProgressUpdate(values);
+//                    }
+//
+//                    @Override
+//                    protected void onPostExecute(Integer integer) {
+//                        super.onPostExecute(integer);
+////                        if (integer == 100) {
+////                            Toast.makeText(getContext(),"完成",Toast.LENGTH_SHORT).show();
+////                        }
+//                    }
+//                }.execute(databaseHelper,object,"cet6");
+//            }
+//            Toast.makeText(this,"完成",Toast.LENGTH_SHORT).show();
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
 
 
         name.setOnTouchListener(new View.OnTouchListener() {

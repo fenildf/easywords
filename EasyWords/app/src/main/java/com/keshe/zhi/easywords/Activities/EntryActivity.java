@@ -58,7 +58,7 @@ public class EntryActivity extends AppCompatActivity {
      */
     public void saveToSDcard(File file) {
         System.out.println("正在复制数据库");
-        InputStream is = this.getResources().openRawResource(R.raw.easy_words);
+        InputStream is = this.getResources().openRawResource(R.raw.easy_word);
         try {
             BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
             BufferedInputStream bis = new BufferedInputStream(is);

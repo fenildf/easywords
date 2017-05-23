@@ -40,7 +40,6 @@ import com.wilddog.wilddogcore.WilddogOptions;
 public class UserActivity2 extends AppCompatActivity implements ProfileFragment.OnFragmentInteractionListener, FindFragment.OnFragmentInteractionListener {
     FragmentManager fragmentManager;
     FragmentTransaction fragmentTransaction;
-    HomePage home_page;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -51,8 +50,7 @@ public class UserActivity2 extends AppCompatActivity implements ProfileFragment.
                 case R.id.navigation_home:
                     fragmentManager = getSupportFragmentManager();
                     fragmentTransaction = fragmentManager.beginTransaction();
-                    System.out.println(home_page);
-                    fragmentTransaction.replace(R.id.content, home_page, "homepage");
+                    fragmentTransaction.replace(R.id.content, new HomePage(), "homepage");
                     fragmentTransaction.commit();
                     return true;
                 case R.id.navigation_dashboard:
@@ -77,10 +75,9 @@ public class UserActivity2 extends AppCompatActivity implements ProfileFragment.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user2);
-        home_page = new HomePage();
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.add(R.id.content, home_page, "homepage");
+        fragmentTransaction.add(R.id.content, new HomePage(), "homepage");
         fragmentTransaction.commit();
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -108,12 +105,6 @@ public class UserActivity2 extends AppCompatActivity implements ProfileFragment.
         System.out.println("单词本");
     }
 
-    public void begin_study_clk(View view) {
-        System.out.println("开始学习");
-        Intent intent = new Intent(this, ReciteWordActivity.class);
-        intent.putExtra("username", getIntent().getStringExtra("username"));
-        startActivity(intent);
-    }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
