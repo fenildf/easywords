@@ -8,6 +8,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 import com.keshe.zhi.easywords.db.MyDatabaseHelper;
+import com.wilddog.wilddogauth.WilddogAuth;
+import com.wilddog.wilddogcore.WilddogApp;
+import com.wilddog.wilddogcore.WilddogOptions;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -22,60 +26,60 @@ public class EntryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_entry);
         dbhelper = MyDatabaseHelper.getDbHelper(this);
-        File file = this.getDatabasePath(dbhelper.getDatabaseName());
-        if (!file.exists()) {//数据库文件不存在则创建
-            System.out.println("数据库不存在");
-            File pfile = file.getParentFile();
-            if (!pfile.exists()) {//父级目录不存在则创建
-                if (pfile.mkdir()){
-                    try {
-                        if (!file.createNewFile()) {
-                            Toast.makeText(this,"数据库未复制成功",Toast.LENGTH_SHORT).show();
-                            return;
-                        }
-                        saveToSDcard(file);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }else {
-                try {
-                    if (!file.createNewFile()) {
-                        Toast.makeText(this,"数据库未复制成功",Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                    saveToSDcard(file);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+//        File file = this.getDatabasePath(dbhelper.getDatabaseName());
+//        if (!file.exists()) {//数据库文件不存在则创建
+//            System.out.println("数据库不存在");
+//            File pfile = file.getParentFile();
+//            if (!pfile.exists()) {//父级目录不存在则创建
+//                if (pfile.mkdir()){
+//                    try {
+//                        if (!file.createNewFile()) {
+//                            Toast.makeText(this,"数据库未复制成功",Toast.LENGTH_SHORT).show();
+//                            return;
+//                        }
+//                        saveToSDcard(file);
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }else {
+//                try {
+//                    if (!file.createNewFile()) {
+//                        Toast.makeText(this,"数据库未复制成功",Toast.LENGTH_SHORT).show();
+//                        return;
+//                    }
+//                    saveToSDcard(file);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
     }
 
-    /**
-     * 将/res/raw中的数据库复制到默认数据库创建的位置
-     * @param file 数据库文件
-     */
-    public void saveToSDcard(File file) {
-        System.out.println("正在复制数据库");
-        InputStream is = this.getResources().openRawResource(R.raw.easy_word);
-        try {
-            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
-            BufferedInputStream bis = new BufferedInputStream(is);
-            byte[] buffer = new byte[1000];
-            int len = 0;
-            while ((len = bis.read(buffer)) != -1) {
-                bos.write(buffer, 0, len);
-            }
-            bis.close();
-            bos.close();
-            is.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            System.out.println("数据库复制成功");
-        }
-    }
+//    /**
+//     * 将/res/raw中的数据库复制到默认数据库创建的位置
+//     * @param file 数据库文件
+//     */
+//    public void saveToSDcard(File file) {
+//        System.out.println("正在复制数据库");
+//        InputStream is = this.getResources().openRawResource(R.raw.easy_word);
+//        try {
+//            BufferedOutputStream bos = new BufferedOutputStream(new FileOutputStream(file));
+//            BufferedInputStream bis = new BufferedInputStream(is);
+//            byte[] buffer = new byte[1000];
+//            int len = 0;
+//            while ((len = bis.read(buffer)) != -1) {
+//                bos.write(buffer, 0, len);
+//            }
+//            bis.close();
+//            bos.close();
+//            is.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }finally {
+//            System.out.println("数据库复制成功");
+//        }
+//    }
 
     public void goLogin(View view) {
         Intent intent = new Intent(this,LoginActivity.class);
@@ -90,14 +94,21 @@ public class EntryActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
-        String uname = sharedPreferences.getString("user", "");
-        if (!uname.equals("")) {
-            System.out.println("用户存在");
-            Intent intent = new Intent(this, UserActivity2.class);
-            intent.putExtra("username", uname);
-            startActivity(intent);
+        WilddogOptions options = new WilddogOptions.Builder().setSyncUrl("https://bishe.wilddogio.com").build();
+        WilddogApp.initializeApp(this, options);
+        WilddogAuth mAuth = WilddogAuth.getInstance();
+        System.out.println(mAuth.getCurrentUser());
+        if (null != mAuth.getCurrentUser()) {
+            startActivity(new Intent(this,UserActivity2.class));
         }
+//        SharedPreferences sharedPreferences = getSharedPreferences("user", Context.MODE_PRIVATE);
+//        String uname = sharedPreferences.getString("user", "");
+//        if (!uname.equals("")) {
+//            System.out.println("用户存在");
+//            Intent intent = new Intent(this, UserActivity2.class);
+//            intent.putExtra("username", uname);
+//            startActivity(intent);
+//        }
 
     }
 }

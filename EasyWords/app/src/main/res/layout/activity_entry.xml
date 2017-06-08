@@ -5,57 +5,59 @@
     android:id="@+id/activity_entry"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#ffffff"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.keshe.zhi.easywords.Activities.EntryActivity"
-    android:weightSum="1">
+    android:weightSum="1"
+    tools:context="com.keshe.zhi.easywords.Activities.EntryActivity">
 
     <ImageView
+        android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@mipmap/logo_meitu_1"
-        android:id="@+id/imageView"
-        android:layout_weight="0.49"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="131dp" />
+        android:layout_marginTop="131dp"
+        android:layout_weight="0.49"
+        app:srcCompat="@mipmap/logo_meitu_1" />
 
     <Button
-        android:text="立即注册"
-        android:layout_width="match_parent"
-        android:textSize="20dp"
-        android:layout_height="wrap_content"
         android:id="@+id/button2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button3"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
         android:background="@drawable/rigister_btn_bg"
         android:onClick="goRegister"
-        android:layout_above="@+id/button3"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:text="立即注册"
+        android:textSize="20dp" />
 
     <TextView
-        android:text="已有账号？"
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="15dp"
-        android:id="@+id/textView2"
         android:layout_alignBaseline="@+id/button3"
         android:layout_alignBottom="@+id/button3"
         android:layout_alignLeft="@+id/imageView"
-        android:layout_alignStart="@+id/imageView" />
+        android:layout_alignStart="@+id/imageView"
+        android:text="已有账号？"
+        android:textSize="15dp" />
 
     <Button
-        android:text="直接登录"
+        android:id="@+id/button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/button3"
-        android:background="#00ffffff"
-        android:textColor="@android:color/holo_blue_light"
-        android:textColorLink="@android:color/holo_blue_dark"
-        android:layout_marginBottom="40dp"
         android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/textView2"
+        android:layout_marginBottom="40dp"
         android:layout_toEndOf="@+id/textView2"
-        android:onClick="goLogin" />
+        android:layout_toRightOf="@+id/textView2"
+        android:background="#00ffffff"
+        android:onClick="goLogin"
+        android:text="直接登录"
+        android:textColor="@android:color/holo_blue_light"
+        android:textColorLink="@android:color/holo_blue_dark" />
 </RelativeLayout>

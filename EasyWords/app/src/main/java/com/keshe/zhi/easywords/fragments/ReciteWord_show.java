@@ -85,6 +85,8 @@ public class ReciteWord_show extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         dbhelper = MyDatabaseHelper.getDbHelper(getContext());
+        mListener.isCollected(dbhelper.checkIsCollected(dbhelper.getWritableDatabase(),word_mean,table_name));
+
 
         View view = inflater.inflate(R.layout.fragment_recite_word_show, container, false);
         word_tv = (TextView) view.findViewById(R.id.textView33);
@@ -121,14 +123,14 @@ public class ReciteWord_show extends Fragment {
             @Override
             public void onClick(View v) {
                 dbhelper.setWordFinished(dbhelper.getWritableDatabase(), table_name, word_mean);
-                onButtonPressed("next");
+                onButtonPressed("next","yes_no");
             }
         });
 
         no_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onButtonPressed(word_mean);
+                onButtonPressed(word_mean,"yes_no");
             }
         });
 
@@ -136,9 +138,9 @@ public class ReciteWord_show extends Fragment {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(String info) {
+    public void onButtonPressed(String info,String pattern) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(info);
+            mListener.onFragmentInteraction(info,pattern);
         }
     }
 
@@ -171,7 +173,8 @@ public class ReciteWord_show extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(String info);
+        void onFragmentInteraction(String info,String pattern);
+        void isCollected(boolean isCollected);
     }
 
     private static class MyThread extends Thread {

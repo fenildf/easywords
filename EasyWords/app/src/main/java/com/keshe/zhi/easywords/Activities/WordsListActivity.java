@@ -47,12 +47,12 @@ public class WordsListActivity extends AppCompatActivity {
         AdapterView.AdapterContextMenuInfo menuInfo = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
         LinearLayout ll = (LinearLayout) menuInfo.targetView;
         switch (item.getItemId()) {
-            case R.id.look:
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.putExtra("query", ((TextView) ll.findViewById(R.id.textView25)).getText().toString());
-                intent.putExtra("username", getIntent().getStringExtra("username"));
-                startActivity(intent);
-                break;
+//            case R.id.look:
+//                Intent intent = new Intent(this, MainActivity.class);
+//                intent.putExtra("query", ((TextView) ll.findViewById(R.id.textView25)).getText().toString());
+//                intent.putExtra("username", getIntent().getStringExtra("username"));
+//                startActivity(intent);
+//                break;
             case R.id.cancel:
 //                dbHelper.reFroNote(dbHelper.getWritableDatabase(), ((TextView) ll.findViewById(R.id.textView25)).getText().toString(), getIntent().getStringExtra("username"));
 //                onResume();

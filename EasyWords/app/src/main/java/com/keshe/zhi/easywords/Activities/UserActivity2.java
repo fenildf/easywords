@@ -72,13 +72,20 @@ public class UserActivity2 extends AppCompatActivity implements ProfileFragment.
     };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user2);
+    protected void onResume() {
+        super.onResume();
         fragmentManager = getSupportFragmentManager();
         fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.add(R.id.content, new HomePage(), "homepage");
         fragmentTransaction.commit();
+    }
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_user2);
+
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
@@ -103,6 +110,7 @@ public class UserActivity2 extends AppCompatActivity implements ProfileFragment.
 
     public void danciben_clk(View view) {
         System.out.println("单词本");
+        startActivity(new Intent(this,DanCiBenActivity.class));
     }
 
 

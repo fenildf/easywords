@@ -15,6 +15,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Random;
 
 /**
  * Created by zhi on 2016/12/31 0031.
@@ -25,7 +28,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     public MyDatabaseHelper(Context context) {
         super(context, "easy_word.db", null, 1);
-        this.context=context;
+        this.context = context;
     }
 
     public static MyDatabaseHelper getDbHelper(Context context) {
@@ -198,7 +201,7 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
         cursor2.close();
 
-        Cursor cursor3 =writableDatabase.rawQuery("select*from user_record where table_name=?", new String[]{table_name});
+        Cursor cursor3 = writableDatabase.rawQuery("select*from user_record where table_name=?", new String[]{table_name});
         WilddogOptions options = new WilddogOptions.Builder().setSyncUrl("https://bishe.wilddogio.com").build();
         WilddogApp.initializeApp(context, options);
         final WilddogAuth mAuth = WilddogAuth.getInstance();
@@ -218,6 +221,104 @@ public class MyDatabaseHelper extends SQLiteOpenHelper {
 
     public void cleanWordsToday(SQLiteDatabase writableDatabase, String category) {
         writableDatabase.delete("words_today", "table_name=?", new String[]{category});
+    }
+
+    public Cursor getWordCollection(SQLiteDatabase writableDatabase, String table_name) {
+        return writableDatabase.rawQuery("select danciben._id, content,analyzes from " + table_name + ",danciben where danciben.word_num=" + table_name + ".sortNum", null);
+    }
+
+    public void addToCollection(SQLiteDatabase writableDatabase, CharSequence text, String category) {
+        Cursor cursor = writableDatabase.rawQuery("select sortNum from " + category + " where content='" + text + "'", null);
+        String word_num = "";
+        while (cursor.moveToNext()) {
+            word_num = cursor.getString(0);
+        }
+        cursor.close();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("word_num", word_num);
+        contentValues.put("table_name", category);
+        writableDatabase.insert("danciben", null, contentValues);
+    }
+
+    public boolean checkIsCollected(SQLiteDatabase writableDatabase, String word_mean, String table_name) {
+        Cursor cursor = writableDatabase.rawQuery("select sortNum from " + table_name + " where content='" + word_mean + "'", null);
+        String word_num = "";
+        while (cursor.moveToNext()) {
+            word_num = cursor.getString(0);
+        }
+        cursor.close();
+        Cursor cursor2 = writableDatabase.rawQuery("select*from danciben where word_num='" + word_num + "' and table_name='" + table_name + "'", null);
+        if (cursor2.getCount() > 0) {
+            return true;
+        }
+        cursor2.close();
+        return false;
+    }
+
+    public void deleteFromCollection(SQLiteDatabase writableDatabase, CharSequence word_mean, String table_name) {
+        Cursor cursor = writableDatabase.rawQuery("select sortNum from " + table_name + " where content='" + word_mean + "'", null);
+        String word_num = "";
+        while (cursor.moveToNext()) {
+            word_num = cursor.getString(0);
+        }
+        cursor.close();
+
+        writableDatabase.delete("danciben", "word_num=? and table_name=?", new String[]{word_num, table_name});
+    }
+
+    public Cursor getOtherMeans(SQLiteDatabase writableDatabase, String word, String table) {
+        //获取总词数
+        Cursor cursor = writableDatabase.rawQuery("select count(*) from " + table, null);
+        int total=0;
+        while (cursor.moveToNext()) {
+            total = cursor.getInt(0);
+        }
+        cursor.close();
+
+        Random random = new Random();
+        int[] nums = new int[3];//随机选三个数字
+        for (int i = 0; i < 3; i++) {
+            nums[i] = random.nextInt(total)+1;
+        }
+
+        return writableDatabase.rawQuery("select analyzes from "+table+" where sortNum='"+nums[0]+"' union "+"select analyzes from "+table+" where sortNum='"+nums[1]+"' union "+"select analyzes from "+table+" where sortNum='"+nums[2]+"'", null);
+
+    }
+
+    public Cursor getSuggestion(SQLiteDatabase writableDatabase, String newQuery, String table) {
+       return writableDatabase.rawQuery("select content from " + table + " where content like '" + newQuery + "%'", null);
+    }
+
+
+    public Cursor getDailysum(SQLiteDatabase writableDatabase) {
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date= new Date();
+        String start = simpleDateFormat.format(date);
+        long time=date.getTime()-7*24*60*60*1000;
+        Date date1 = new Date(time);
+        String end = simpleDateFormat.format(date1);
+        System.out.println("start:"+start+",end:"+end);
+        return writableDatabase.rawQuery("select * from day_record where date between '"+start+"' and '"+end+"'", null);
+    }
+
+    public Cursor getDayRecord(SQLiteDatabase writableDatabase, String s) {
+        return writableDatabase.rawQuery("select*from day_record where date like '" + s + "%'", null);
+    }
+
+    public Cursor getUserRecord(SQLiteDatabase writableDatabase, String s) {
+        return writableDatabase.rawQuery("select count(*) from user_record where finishtime<'" + s + "'", null);
+    }
+
+    public void checkIn(SQLiteDatabase database, Date date) {
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd", Locale.CHINA);
+        ContentValues value = new ContentValues();
+        value.put("date",format.format(date));
+        value.put("isChecked",true);
+        database.insert("qiandao", null, value);
+    }
+
+    public Cursor getCheckedDay(SQLiteDatabase database) {
+        return database.rawQuery("select date from qiandao", null);
     }
 
     /**

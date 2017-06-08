@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.keshe.zhi.easywords.db.MyDatabaseHelper;
@@ -32,8 +33,6 @@ public class LoginActivity extends AppCompatActivity {
     EditText passwd = null;
     TextView tip = null;
     WilddogAuth mAuth;
-    MyDatabaseHelper databaseHelper;
-
     /**
      * 将/res/raw中的数据库复制到默认数据库创建的位置
      * @param file 数据库文件
@@ -63,11 +62,13 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        WilddogOptions options = new WilddogOptions.Builder().setSyncUrl("https://bishe.wilddogio.com").build();
+        WilddogApp.initializeApp(this, options);
+        mAuth = WilddogAuth.getInstance();
         dbHelper = MyDatabaseHelper.getDbHelper(this);
         name = (EditText) findViewById(R.id.editText9);
         passwd = (EditText) findViewById(R.id.editText11);
         tip = (TextView) findViewById(R.id.textView58);
-        databaseHelper=MyDatabaseHelper.getDbHelper(this);
 
         File file = this.getDatabasePath(dbHelper.getDatabaseName());
         System.out.println(file.getAbsolutePath());
@@ -167,17 +168,25 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
-        WilddogOptions options = new WilddogOptions.Builder().setSyncUrl("https://bishe.wilddogio.com").build();
-        WilddogApp.initializeApp(this, options);
-        mAuth = WilddogAuth.getInstance();
     }
 
     public void checkInNow(View view) {
+//        final Handler handler = new Handler(){
+//            @Override
+//            public void handleMessage(Message msg) {
+//                super.handleMessage(msg);
+//                switch (msg.what) {
+//                    case 1234:
+//                        tip.setText("用户名或密码错误");
+//                        break;
+//                }
+//            }
+//        };
         final AlertDialog alertDialog = new AlertDialog.Builder(this).setCancelable(false).setView(R.layout.doing_some).create();
-//        String uname = name.getText().toString().trim();
-//        String pass = passwd.getText().toString().trim();
-        String uname = "18624323501";
-        String pass = "771929558";
+        String uname = name.getText().toString().trim();
+        String pass = passwd.getText().toString().trim();
+//        String uname = "18624323501";
+//        String pass = "771929558";
 
         if ("".equals(uname) || "".equals(pass)) {
             Toast.makeText(this, "输入不能为空", Toast.LENGTH_SHORT).show();
@@ -197,7 +206,7 @@ public class LoginActivity extends AppCompatActivity {
                             if (!task.isSuccessful()) {
                                 Log.e("signInByPhone", "signInWithPhone", task.getException());
                                 alertDialog.dismiss();
-                                Toast.makeText(LoginActivity.this, "Authentication failed.",
+                                Toast.makeText(LoginActivity.this, "用户名或密码错误",
                                         Toast.LENGTH_SHORT).show();
                             }else {
                                 alertDialog.dismiss();

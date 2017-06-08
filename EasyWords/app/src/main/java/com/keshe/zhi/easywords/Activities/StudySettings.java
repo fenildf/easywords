@@ -2,6 +2,7 @@ package com.keshe.zhi.easywords.Activities;
 
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ public class StudySettings extends AppCompatActivity {
     ListView listView;
     MyDatabaseHelper dbhelper;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,10 +50,10 @@ public class StudySettings extends AppCompatActivity {
             case "yes_no":
                 study_pattern = "认知";
                 break;
-            case "choose":
+            case "pick_means":
                 study_pattern = "选择";
                 break;
-            case "spelling":
+            case "spell_word":
                 study_pattern = "拼写";
                 break;
         }
@@ -136,7 +138,43 @@ public class StudySettings extends AppCompatActivity {
                         builder.show();
                         break;
                     case 1:
+                        //设置学习模式
+                        ConstraintLayout view2 = (ConstraintLayout) LayoutInflater.from(StudySettings.this).inflate(R.layout.study_pattern_item, null);
+                        final Spinner spinner = (Spinner) view2.findViewById(R.id.spinner2);
+                        AlertDialog.Builder builder1 = new AlertDialog.Builder(StudySettings.this);
+                        builder1.setView(view2);
+                        builder1.setTitle("选择学习模式");
+                        builder1.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String pattern = (String) spinner.getSelectedItem();
+                                String pattern_c = pattern;
+                                switch (pattern) {
+                                    case "认知":
+                                        pattern="yes_no";
+                                        break;
+                                    case "选择":
+                                        pattern="pick_means";
+                                        break;
+                                    case "拼写":
+                                        pattern = "spell_word";
+                                        break;
+                                }
+                                SharedPreferences sp = getSharedPreferences(mAuth.getCurrentUser().getUid(), MODE_PRIVATE);
+                                sp.edit().putString("study_pattern",pattern).apply();
 
+                                TextView textView = (TextView) view.findViewById(R.id.textView84);
+                                textView.setText(pattern_c);
+                            }
+                        });
+
+                        builder1.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                        builder1.create().show();
                         break;
                 }
             }

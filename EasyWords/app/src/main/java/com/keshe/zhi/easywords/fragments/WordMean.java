@@ -8,6 +8,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,15 +42,19 @@ public class WordMean extends Fragment {
     Button next_btn;
     ImageButton pron_btn;
     String pron_uri;
+    CardView cardView;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String WORD = "param1";
     private static final String TABLE = "param2";
+    private static final String PATTERN = "param3";
+
 
     // TODO: Rename and change types of parameters
     private String word;
     private String table;
+    private String pattern;
 
     private OnFragmentInteractionListener mListener;
 
@@ -66,11 +71,12 @@ public class WordMean extends Fragment {
      * @return A new instance of fragment WordMean.
      */
     // TODO: Rename and change types and number of parameters
-    public static WordMean newInstance(String word, String table) {
+    public static WordMean newInstance(String word, String table,String pattern) {
         WordMean fragment = new WordMean();
         Bundle args = new Bundle();
         args.putString(WORD, word);
         args.putString(TABLE, table);
+        args.putString(PATTERN,pattern);
         fragment.setArguments(args);
         return fragment;
     }
@@ -81,6 +87,7 @@ public class WordMean extends Fragment {
         if (getArguments() != null) {
             word = getArguments().getString(WORD);
             table = getArguments().getString(TABLE);
+            pattern = getArguments().getString(PATTERN);
         }
     }
 
@@ -90,37 +97,51 @@ public class WordMean extends Fragment {
         dbhelper = MyDatabaseHelper.getDbHelper(getContext());
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_word_mean, container, false);
-        word_tv = (TextView) view.findViewById(R.id.textView37);
+
+        word_tv = (TextView) view.findViewById(R.id.textView33);
         phon_tv = (TextView) view.findViewById(R.id.textView50);
         mean_tv = (TextView) view.findViewById(R.id.textView51);
         example_tv = (TextView) view.findViewById(R.id.textView52);
         notShow_btn = (Button) view.findViewById(R.id.button8);
         next_btn = (Button) view.findViewById(R.id.button);
         pron_btn = (ImageButton) view.findViewById(R.id.imageButton3);
+        cardView = (CardView) view.findViewById(R.id.cardView4);
+        if ("query".equals(pattern)) {
+            cardView.setVisibility(View.GONE);
+        }
 
 
         next_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onButtonPressed("next");
+                onButtonPressed("next",pattern);
+                System.out.println("WordMean next clicked");
             }
         });
+        mListener.isCollected(dbhelper.checkIsCollected(dbhelper.getWritableDatabase(),word,table));
 
         notShow_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dbhelper.setWordFinished(dbhelper.getWritableDatabase(), table, word);
-                onButtonPressed("next");
+                onButtonPressed("next",pattern);
             }
         });
 
-        Cursor cursor = dbhelper.getWordMean(dbhelper.getWritableDatabase(), table, word);
+        Cursor cursor = dbhelper.getWordMean(dbhelper.getWritableDatabase(), table.trim(), word.trim());
+        if (cursor.getCount() == 0) {
+            word_tv.setText("词库中未找到该单词");
+            phon_tv.setVisibility(View.INVISIBLE);
+            mean_tv.setVisibility(View.INVISIBLE);
+            example_tv.setVisibility(View.INVISIBLE);
+            pron_btn.setVisibility(View.INVISIBLE);
+        }
         while (cursor.moveToNext()) {
+            System.out.println("here");
             word_tv.setText(cursor.getString(cursor.getColumnIndex("content")));
             phon_tv.setText(cursor.getString(cursor.getColumnIndex("phonogram_en")));
             mean_tv.setText(cursor.getString(cursor.getColumnIndex("analyzes")));
             example_tv.setText(cursor.getString(cursor.getColumnIndex("example_en")) + "\n" + cursor.getString(cursor.getColumnIndex("example_zh")));
-
             pron_uri = cursor.getString(cursor.getColumnIndex("music_path"));
         }
         cursor.close();
@@ -152,9 +173,9 @@ public class WordMean extends Fragment {
     }
 
     // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(String uri) {
+    public void onButtonPressed(String uri,String pattern) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.onFragmentInteraction(uri,pattern);
         }
     }
 
@@ -187,6 +208,7 @@ public class WordMean extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onFragmentInteraction(String info);
+        void onFragmentInteraction(String info,String pattern);
+        void isCollected(boolean isCollected);
     }
 }
